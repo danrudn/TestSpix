@@ -1,3 +1,6 @@
 **/build
 **/venv
 **/testspix.egg-info
+*.png
+*.json
+**/__pycache__

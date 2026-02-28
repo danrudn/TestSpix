@@ -54,7 +54,7 @@ QMAKE_RPATHDIR += $$SPIX_LIBDIR
 # 1. Venv erstellen (einmalig)
 python3 -m venv venv
 
-# 2. Venv aktivieren
+# 2. venv sourcen
 source venv/bin/activate
 
 # 3. Dependencies installieren aus pyproject.toml

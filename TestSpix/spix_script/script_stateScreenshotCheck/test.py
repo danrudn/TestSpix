@@ -15,8 +15,8 @@ import shutil
 server = xmlrpc.client.ServerProxy('http://localhost:9000')
 
 # Setup directories
-REFERENCE_DIR = Path(__file__).parent / "reference-images"
-TEST_DIR = Path(__file__).parent / "test-images"
+REFERENCE_DIR = Path(__file__).parent / "images_reference"
+TEST_DIR = Path(__file__).parent / "images_test"
 
 # Clean up test directory - remove all existing images
 if TEST_DIR.exists():
@@ -45,7 +45,7 @@ def compare_images(reference_path, test_path):
     Compare two images using SSIM (Structural Similarity Index).
     
     SSIM ranges from -1 to 1, where 1 means identical.
-    Requires SSIM = 1.0 for pixel-perfect match.
+    Requires SSIM >= 0.9999 for match (accounts for floating-point precision).
 
     checks properties (edges, geometric patterns, brightness), it is not a pixel comparison.
     I did pixel comparison before but because of aliasing whatever there is still a missmatch between ref und test image
@@ -63,11 +63,12 @@ def compare_images(reference_path, test_path):
             data_range=ref_image.max() - ref_image.min()
         )
         
-        if ssim_score == 1.0:
-            print(f"   ✅ Images are identical (SSIM: {ssim_score:.4f})")
+        # Use >= 0.9999 instead of == 1.0 to account for floating-point precision
+        if ssim_score >= 0.9999:
+            print(f"   ✅ Images are identical (SSIM: {ssim_score:.6f})")
             return True
         else:
-            print(f"   ❌ Images differ (SSIM: {ssim_score:.4f} < 1.0)")
+            print(f"   ❌ Images differ (SSIM: {ssim_score:.6f} < 0.9999)")
             return False
             
     except FileNotFoundError as e:

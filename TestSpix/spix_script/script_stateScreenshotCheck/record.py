@@ -12,7 +12,7 @@ from pathlib import Path
 server = xmlrpc.client.ServerProxy('http://localhost:9000')
 
 # Create reference-images directory if it doesn't exist
-REFERENCE_DIR = Path(__file__).parent / "reference-images"
+REFERENCE_DIR = Path(__file__).parent / "images_reference"
 REFERENCE_DIR.mkdir(exist_ok=True)
 
 # function for reading state property of the root Item in main.qml Item{ states[]...}
