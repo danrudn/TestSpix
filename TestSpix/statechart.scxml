@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.w3.org/2005/07/scxml" version="1.0" binding="early" xmlns:qt="http://www.qt.io/2015/02/scxml-ext" name="statechart" qt:editorversion="18.0.2">
+    <state id="state1">
+        <qt:editorinfo geometry="188.30;331.82;-84.50;-50;144.50;100" scenegeometry="188.30;331.82;103.80;281.82;144.50;100"/>
+        <transition type="external" event="gotoPage2" target="state2">
+            <qt:editorinfo endTargetFactors="22.31;50.86"/>
+        </transition>
+    </state>
+    <state id="state2">
+        <qt:editorinfo geometry="456;331.82;-60;-50;120;100" scenegeometry="456;331.82;396;281.82;120;100"/>
+        <transition type="external" event="gotoPage3" target="state3"/>
+    </state>
+    <state id="state3">
+        <qt:editorinfo geometry="330.80;604.60;-60;-50;120;100" scenegeometry="330.80;604.60;270.80;554.60;120;100"/>
+        <transition type="external" event="gotoPage1" target="state1"/>
+    </state>
+</scxml>
