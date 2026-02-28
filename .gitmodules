@@ -1,0 +1,9 @@
+[submodule "TestSpix/libs/libs/spix"]
+	path = TestSpix/libs/libs/spix
+	url = https://github.com/faaxm/spix.git
+[submodule "TestSpix/libs/spix"]
+	path = TestSpix/libs/spix
+	url = https://github.com/faaxm/spix.git
+[submodule "TestSpix/libs/anyrpc"]
+	path = TestSpix/libs/anyrpc
+	url = https://github.com/sgieseking/anyrpc.git
