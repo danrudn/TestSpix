@@ -15,6 +15,7 @@
 QJsonObject dumpQmlObject(QObject* obj, int maxDepth = 10, int currentDepth = 0) {
     QJsonObject result;
     
+    // break recursion if the call stack is >= maxDepth
     if (!obj || currentDepth >= maxDepth) {
         return result;
     }
@@ -23,7 +24,7 @@ QJsonObject dumpQmlObject(QObject* obj, int maxDepth = 10, int currentDepth = 0)
     result["objectName"] = obj->objectName();
     result["className"] = QString(obj->metaObject()->className());
     
-    // Get all properties
+    // currentItem:  get all properties for the currentItem
     QJsonObject properties;
     const QMetaObject* metaObj = obj->metaObject();
     for (int i = 0; i < metaObj->propertyCount(); ++i) {
@@ -44,17 +45,17 @@ QJsonObject dumpQmlObject(QObject* obj, int maxDepth = 10, int currentDepth = 0)
     }
     result["properties"] = properties;
     
-    // Get children
+    // currentItem->children: use recursion to go through each children
     QJsonArray children;
     if (auto quickItem = qobject_cast<QQuickItem*>(obj)) {
         // For QQuickItem, use childItems()
         for (auto child : quickItem->childItems()) {
-            children.append(dumpQmlObject(child, maxDepth, currentDepth + 1));
+            children.append(dumpQmlObject(child, maxDepth, currentDepth + 1)); // increase depth (call stack)
         }
     } else {
         // For regular QObject, use children()
         for (auto child : obj->children()) {
-            children.append(dumpQmlObject(child, maxDepth, currentDepth + 1));
+            children.append(dumpQmlObject(child, maxDepth, currentDepth + 1)); // increase depth (call stack)
         }
     }
     
@@ -67,13 +68,6 @@ QJsonObject dumpQmlObject(QObject* obj, int maxDepth = 10, int currentDepth = 0)
 
 int main(int argc, char *argv[])
 {
-    // // Force software rendering for deterministic screenshots
-    // qputenv("QT_QUICK_BACKEND", "software");
-    // qputenv("QSG_RHI_BACKEND", "software");
-    
-    // // Disable anti-aliasing for pixel-perfect rendering
-    // QQuickWindow::setTextRenderType(QQuickWindow::NativeTextRendering);
-    
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
@@ -110,7 +104,7 @@ int main(int argc, char *argv[])
     // Spix RPC Server starten
     spix::AnyRpcServer server;
     
-    // Custom Command Handler
+    // - register custom command handler for spix to get commands from test script
     server.setGenericCommandHandler([&viewController, mainWindow](std::string command, std::string payload) {
         if (command == "gotoPage1") {
             viewController.gotoPage1();
@@ -119,29 +113,21 @@ int main(int argc, char *argv[])
         } else if (command == "gotoPage3") {
             viewController.gotoPage3();
         } else if (command == "dumpQmlTree") {
-            // Dump QML tree and store in mainWindow property
+
+            // read qml tree of the mainWindow (page1, page2..)
             QJsonObject tree = dumpQmlObject(mainWindow, 50);
             QJsonDocument doc(tree);
             QString jsonString = doc.toJson(QJsonDocument::Compact);  // Compact for transfer
             
-            // Store in dynamic property (readable via getStringProperty)
+            // set the qmltree as a dynamic property on the C++ QObject (readable via spix::getStringProperty)
             mainWindow->setProperty("_qmlTreeJson", jsonString);
-            
-            // Optional: Also write to file as fallback
-            if (!payload.empty()) {
-                QFile file(QString::fromStdString(payload));
-                if (file.open(QIODevice::WriteOnly)) {
-                    file.write(doc.toJson(QJsonDocument::Indented));
-                    file.close();
-                }
-            }
         }
-        
-        return std::string();
     });
     
     auto bot = new spix::QtQmlBot();
     bot->runTestServer(server);
+
+
 
     return app.exec();
 }
