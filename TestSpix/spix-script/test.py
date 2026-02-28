@@ -40,33 +40,35 @@ def take_screenshot(page_name):
         return None
 
 
-def compare_images(reference_path, test_path, tolerance_percent=0.01):
+def compare_images(reference_path, test_path):
     """
-    Compare two images with minimal tolerance for anti-aliasing differences.
-    Returns True if images are identical or differ by less than tolerance_percent.
-    Default tolerance: 0.01% (allows minor anti-aliasing/rendering differences)
+    Compare two images using SSIM (Structural Similarity Index).
+    
+    SSIM ranges from -1 to 1, where 1 means identical.
+    Requires SSIM = 1.0 for pixel-perfect match.
+
+    checks properties (edges, geometric patterns, brightness), it is not a pixel comparison.
+    I did pixel comparison before but because of aliasing whatever there is still a missmatch between ref und test image
     """
     try:
         # Load images
         ref_image = io.imread(str(reference_path))
         test_image = io.imread(str(test_path))
         
-        # Check if images are identical
-        if np.array_equal(ref_image, test_image):
-            print(f"   ✅ Images are identical")
+        # Calculate SSIM
+        ssim_score = metrics.structural_similarity(
+            ref_image, 
+            test_image, 
+            channel_axis=2 if len(ref_image.shape) == 3 else None,
+            data_range=ref_image.max() - ref_image.min()
+        )
+        
+        if ssim_score == 1.0:
+            print(f"   ✅ Images are identical (SSIM: {ssim_score:.4f})")
             return True
         else:
-            # Calculate how many pixels differ
-            diff_pixels = np.sum(ref_image != test_image)
-            total_pixels = ref_image.size
-            diff_percent = (diff_pixels / total_pixels) * 100
-            
-            if diff_percent <= tolerance_percent:
-                print(f"   ✅ Images match within tolerance ({diff_pixels} pixels / {diff_percent:.4f}% ≤ {tolerance_percent}%)")
-                return True
-            else:
-                print(f"   ❌ Images differ too much ({diff_pixels} pixels / {diff_percent:.4f}% > {tolerance_percent}%)")
-                return False
+            print(f"   ❌ Images differ (SSIM: {ssim_score:.4f} < 1.0)")
+            return False
             
     except FileNotFoundError as e:
         print(f"   ❌   Image not found: {e.filename}")

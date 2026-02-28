@@ -1,12 +1,20 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickWindow>
 #include "viewcontroller.h"
 #include <Spix/AnyRpcServer.h>
 #include <Spix/QtQmlBot.h>
 
 int main(int argc, char *argv[])
 {
+    // // Force software rendering for deterministic screenshots
+    // qputenv("QT_QUICK_BACKEND", "software");
+    // qputenv("QSG_RHI_BACKEND", "software");
+    
+    // // Disable anti-aliasing for pixel-perfect rendering
+    // QQuickWindow::setTextRenderType(QQuickWindow::NativeTextRendering);
+    
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
