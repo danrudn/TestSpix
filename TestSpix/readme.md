@@ -21,7 +21,10 @@ mkdir -p libs/spix/build/
 cd libs/spix/build/
 
 # DSPIX_QT_MAJOR=5 for QT 5.15
-cmake -DSPIX_QT_MAJOR=6 -DCMAKE_PREFIX_PATH=/opt/Qt/6.8.0/gcc_64 ..
+cmake -DSPIX_QT_MAJOR=6 \
+-DSPIX_BUILD_EXAMPLES=OFF \
+-DCMAKE_INSTALL_PREFIX=../install \
+-DCMAKE_PREFIX_PATH=~/Qt/6.10.2/gcc_64 ..
 cmake --build .
 sudo cmake --install .
 
