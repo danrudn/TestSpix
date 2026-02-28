@@ -48,11 +48,14 @@ QMAKE_RPATHDIR += $$SPIX_LIBDIR
 
 ## 4. install python dependencies for image compare
 ```
-cd spix-script
+# 1. Venv erstellen (einmalig)
 python3 -m venv venv
+
+# 2. Venv aktivieren
 source venv/bin/activate
-pip install scikit-image numpy
-python test.py
+
+# 3. Dependencies installieren aus pyproject.toml
+pip install -e .
 
 ```
 

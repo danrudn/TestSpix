@@ -1,0 +1,10 @@
+[project]
+name = "testspix"
+version = "0.1.0"
+dependencies = [
+    "scikit-image",
+    "numpy",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black"]
