@@ -7,7 +7,7 @@ Creates reference snapshots for each page state
 import xmlrpc.client
 import time
 from pathlib import Path
-from qml_tree_utils import dump_qml_tree, save_tree_snapshot, print_tree_summary
+from qml_tree_utils import dump_qml_tree, save_tree_snapshot
 
 server = xmlrpc.client.ServerProxy('http://localhost:9000')
 
@@ -53,4 +53,3 @@ print("   ✅ Saved to page1_return.json")
 print("\n✅ Recording complete!")
 print(f"   Snapshots saved to: {REFERENCE_DIR}")
 print("\n📊 Page 1 structure preview:")
-print_tree_summary(tree1)

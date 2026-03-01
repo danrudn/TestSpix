@@ -24,7 +24,7 @@ REFERENCE_DIR = Path(__file__).parent / "json_reference"
 TEST_DIR = Path(__file__).parent / "json_test"
 TEST_DIR.mkdir(exist_ok=True)
 
-def test_state(state_name: str, expected_state: str) -> bool:
+def test_routine(state_name: str, expected_state: str) -> bool:
     """
     Test current QML tree against reference snapshot.
     Also checks the state property.
@@ -59,10 +59,6 @@ def test_state(state_name: str, expected_state: str) -> bool:
         return True
     else:
         print(f"   ❌ QML tree differs from reference ({len(differences)} differences):")
-        for diff in differences[:10]:  # Show first 10 differences
-            print(f"      • {diff}")
-        if len(differences) > 10:
-            print(f"      ... and {len(differences) - 10} more")
         return False
 
 
@@ -72,7 +68,7 @@ all_passed = True
 
 # 1. Check initial state (Page 1)
 print("Checking initial state (Page 1)...")
-if not test_state("page1", "page1"):
+if not test_routine("page1", "page1"):
     all_passed = False
     print("\n❌ Test aborted: Tree comparison failed!")
     sys.exit(1)
@@ -83,7 +79,7 @@ print("\n→ Going to Page 2")
 server.command("gotoPage2", "")
 time.sleep(1)
 print("Testing Page 2 tree...")
-if not test_state("page2", "page2"):
+if not test_routine("page2", "page2"):
     all_passed = False
     print("\n❌ Test aborted: Tree comparison failed!")
     sys.exit(1)
@@ -94,7 +90,7 @@ print("\n→ Going to Page 3")
 server.command("gotoPage3", "")
 time.sleep(1)
 print("Testing Page 3 tree...")
-if not test_state("page3", "page3"):
+if not test_routine("page3", "page3"):
     all_passed = False
     print("\n❌ Test aborted: Tree comparison failed!")
     sys.exit(1)
@@ -105,7 +101,7 @@ print("\n→ Back to Page 1")
 server.command("gotoPage1", "")
 time.sleep(1)
 print("Testing Page 1 return tree...")
-if not test_state("page1_return", "page1"):
+if not test_routine("page1_return", "page1"):
     all_passed = False
     print("\n❌ Test aborted: Tree comparison failed!")
     sys.exit(1)

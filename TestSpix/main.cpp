@@ -47,13 +47,21 @@ QJsonObject dumpQmlObject(QObject* obj, int maxDepth = 10, int currentDepth = 0)
     
     // currentItem->children: use recursion to go through each children
     QJsonArray children;
-    if (auto quickItem = qobject_cast<QQuickItem*>(obj)) {
-        // For QQuickItem, use childItems()
+    
+    // Special handling for QQuickWindow: only dump contentItem (visual tree root)
+    if (auto window = qobject_cast<QQuickWindow*>(obj)) {
+        if (window->contentItem()) {
+            children.append(dumpQmlObject(window->contentItem(), maxDepth, currentDepth + 1));
+        }
+    }
+    // For QQuickItem, use childItems() to traverse visual hierarchy
+    else if (auto quickItem = qobject_cast<QQuickItem*>(obj)) {
         for (auto child : quickItem->childItems()) {
             children.append(dumpQmlObject(child, maxDepth, currentDepth + 1)); // increase depth (call stack)
         }
-    } else {
-        // For regular QObject, use children()
+    }
+    // For regular QObject, use children()
+    else {
         for (auto child : obj->children()) {
             children.append(dumpQmlObject(child, maxDepth, currentDepth + 1)); // increase depth (call stack)
         }
