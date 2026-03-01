@@ -80,9 +80,7 @@ int main(int argc, char *argv[])
 
     // start qml engine
     QQmlApplicationEngine engine;
-    // ViewController als QML-Objekt registrieren
     engine.rootContext()->setContextProperty("viewController", &viewController);
-    // Statemachine direkt für QML-State-Bindings bereitstellen
     engine.rootContext()->setContextProperty("stateMachine", &m_stateMachine);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -97,7 +95,7 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
     engine.load(url);
     
-    // Get mainWindow and add dynamic property for tree dump
+    // important for dump qml tree -> set a property _qmlTreeJson to mainWindow for reading the qmlTree via Spix 
     QObject* mainWindow = engine.rootObjects().first();
     mainWindow->setProperty("_qmlTreeJson", QString());  // Initialize property
 
@@ -113,13 +111,12 @@ int main(int argc, char *argv[])
         } else if (command == "gotoPage3") {
             viewController.gotoPage3();
         } else if (command == "dumpQmlTree") {
-
             // read qml tree of the mainWindow (page1, page2..)
             QJsonObject tree = dumpQmlObject(mainWindow, 50);
             QJsonDocument doc(tree);
             QString jsonString = doc.toJson(QJsonDocument::Compact);  // Compact for transfer
             
-            // set the qmltree as a dynamic property on the C++ QObject (readable via spix::getStringProperty)
+            // set the qmltree as a property in mainwindow -> readable with spix
             mainWindow->setProperty("_qmlTreeJson", jsonString);
         }
     });
