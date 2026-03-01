@@ -15,7 +15,6 @@ make
 sudo make install  # install in /usr/local/lib...
 ```
 
-
 ## 2. build spix for using the lib in qmake project
 
 ```
@@ -31,7 +30,6 @@ cmake --build .
 sudo cmake --install .
 
 ```
-
 
 ## 3. add spix to .pro 
 
@@ -66,7 +64,6 @@ pip install -e .
 
 
 
-
 ## Architecture
 
 ```
@@ -83,6 +80,8 @@ pip install -e .
 **Key Concept:** XML-RPC is an open standard protocol. The test machine only needs Python with standard libraries - Spix server runs inside the Qt application.
 
 ---
+
+
 
 ## Dependencies
 
@@ -101,6 +100,8 @@ pip install -e .
 - **numpy** - numerical operations
 
 ---
+
+
 
 ## Project Structure
 
@@ -130,6 +131,8 @@ TestSpix/
 ```
 
 ---
+
+
 
 ## Testing Approaches
 
@@ -170,6 +173,8 @@ Compares complete QML object hierarchy as JSON.
 
 ---
 
+
+
 ## Usage
 
 ### Run Tests
@@ -196,6 +201,8 @@ python3 test.py  # Compares current state to json_reference/
 ```
 
 ---
+
+
 
 ## How It Works
 
@@ -233,6 +240,8 @@ tree = json.loads(tree_json)
 ```
 
 ---
+
+
 
 ## Key Implementation Details
 
@@ -274,6 +283,8 @@ tree = json.loads(tree_json)
 - **Data transfer:** Via dynamic QObject property (C++ only, not exposed to QML)
 
 ---
+
+
 
 ## License
 
